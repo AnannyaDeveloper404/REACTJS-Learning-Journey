@@ -76,6 +76,9 @@ const MultipleEffects = () => {
 export default MultipleEffects;
 ```
 
+- The first useEffect will be triggered whenever the 1st button is clicked
+- The second useEffect will be triggered whenever the 2nd button is clicked
+
 ```js
 import { useEffect, useState } from "react";
 
