@@ -128,3 +128,112 @@ setUser(user);
 }
 
 ```
+
+#### DON'T CALL HOOKS CONDITIONALLY
+
+```js
+import { useState, useEffect } from "react";
+
+const Example = () => {
+  const [condition, setCondition] = useState(true);
+  if (condition) {
+    // won't work
+    const [state, setState] = useState(false);
+  }
+
+  if (condition) {
+    return <h2>Hello There</h2>;
+  }
+  // this will also fail
+  useEffect(() => {
+    console.log("hello there");
+  }, []);
+  return <h2>example</h2>;
+};
+
+export default Example;
+```
+
+#### Short Circuit Evaluation
+
+Vanilla JS
+
+In JavaScript, short-circuit evaluation is a technique that allows you to use logical operators (such as && and ||) to perform conditional evaluations in a concise way.
+
+The && operator (logical AND) returns the first operand if it is "falsy", or the second operand if the first operand is "truthy".
+
+For example:
+
+```js
+const x = 0;
+const y = 1;
+
+console.log(x && y); // Output: 0 (the first operand is falsy, so it is returned)
+console.log(y && x); // Output: 0 (the second operand is falsy, so it is returned)
+```
+
+The || operator (logical OR) returns the first operand if it is "truthy", or the second operand if the first operand is "falsy".
+
+For example:
+
+```js
+const x = 0;
+const y = 1;
+
+console.log(x || y); // Output: 1 (the first operand is falsy, so the second operand is returned)
+console.log(y || x); // Output: 1 (the first operand is truthy, so it is returned)
+```
+
+```js
+import { useState } from "react";
+
+const ShortCircuitOverview = () => {
+  // falsy
+  const [text, setText] = useState("");
+  // truthy
+  const [name, setName] = useState("susan");
+  const [user, setUser] = useState({ name: "john" });
+  const [isEditing, setIsEditing] = useState(false);
+
+  // can't use if statements
+  return (
+    <div>
+      <h2>{text || "default value"}</h2>
+      {text && (
+        <div>
+          <h2> whatever return</h2>
+          <h2>{name}</h2>
+        </div>
+      )}
+      {/* more info below */}
+      {!text && (
+        <div>
+          <h2> whatever return</h2>
+          <h2>{name}</h2>
+        </div>
+      )}
+      {user && <SomeComponent name={user.name} />}
+      <h2 style={{ margin: "1rem 0" }}>Ternary Operator</h2>
+      <button className="btn">{isEditing ? "edit" : "add"}</button>
+      {user ? (
+        <div>
+          <h4>hello there user {user.name}</h4>
+        </div>
+      ) : (
+        <div>
+          <h2>please login</h2>
+        </div>
+      )}
+    </div>
+  );
+};
+const SomeComponent = ({ name }) => {
+  return (
+    <div>
+      <h4>hello there, {name}</h4>
+      <button className="btn">log out</button>
+    </div>
+  );
+};
+export default ShortCircuitEvaluation;
+```
